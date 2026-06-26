@@ -1,0 +1,6 @@
+{
+  "title": "Collection Yakari",
+  "description": "Suivi de ma collection des 42 albums de Yakari (possédés / manquants).",
+  "build": "python3 scripts/build.py",
+  "output": "dist"
+}
