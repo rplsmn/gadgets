@@ -116,8 +116,8 @@ TEMPLATE = """<!doctype html>
 <title>Collection Yakari</title>
 <style>
   :root{
-    --bg:#1b2420; --card:#243029; --card-line:rgba(237,230,216,.14);
-    --ink:#ede6d8; --ink-dim:#b9b3a3; --moss:#8faf6e;
+    --bg:#111; --card:#161616; --card-line:#2a2a2a;
+    --ink:#e0e0e0; --ink-dim:#8a8a8a; --moss:#eec35e;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -127,7 +127,7 @@ TEMPLATE = """<!doctype html>
   .sub{color:var(--ink-dim);font-size:.95rem;margin:0 0 1rem}
   .progress-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem}
   .progress-track{flex:1;height:10px;border-radius:99px;
-    background:rgba(237,230,216,.12);overflow:hidden}
+    background:rgba(224,224,224,.10);overflow:hidden}
   .progress-fill{height:100%;background:var(--moss);border-radius:99px;
     transition:width .4s ease}
   .progress-label{font-variant-numeric:tabular-nums;font-size:.9rem;
@@ -141,12 +141,12 @@ TEMPLATE = """<!doctype html>
   .card{background:var(--card);border:1px solid var(--card-line);
     border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
   .cover{position:relative;aspect-ratio:3/4;
-    background:repeating-linear-gradient(45deg, rgba(237,230,216,.05) 0 8px, transparent 8px 16px)}
+    background:repeating-linear-gradient(45deg, rgba(224,224,224,.05) 0 8px, transparent 8px 16px)}
   .card.missing .cover{border-bottom:1px dashed var(--card-line)}
   .cover img{width:100%;height:100%;object-fit:cover;display:block}
   .cover-placeholder{width:100%;height:100%}
   .stamp{position:absolute;left:-16%;right:-16%;bottom:14%;text-align:center;
-    white-space:nowrap;background:var(--moss);color:#16210f;font-size:.95rem;
+    white-space:nowrap;background:var(--moss);color:#1a1a1a;font-size:.95rem;
     font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:.4rem 0;
     transform:rotate(-22deg);box-shadow:0 3px 10px rgba(0,0,0,.55)}
   .meta{padding:.6rem .7rem .8rem;display:flex;flex-direction:column;gap:.15rem}

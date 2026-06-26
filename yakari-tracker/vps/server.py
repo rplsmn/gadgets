@@ -64,15 +64,15 @@ PAGE = """<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Yakari — admin</title>
 <style>
-  body{font-family:-apple-system,sans-serif;background:#1b2420;color:#ede6d8;
+  body{font-family:-apple-system,sans-serif;background:#111;color:#e0e0e0;
        max-width:480px;margin:0 auto;padding:1.25rem}
   h1{font-size:1.3rem}
   ul{list-style:none;padding:0}
-  li{padding:.45rem 0;border-bottom:1px solid rgba(237,230,216,.12);font-size:.95rem}
-  input[type=checkbox]{transform:scale(1.3);margin-right:.5rem;accent-color:#8faf6e}
+  li{padding:.45rem 0;border-bottom:1px solid #2a2a2a;font-size:.95rem}
+  input[type=checkbox]{transform:scale(1.3);margin-right:.5rem;accent-color:#eec35e}
   button{margin-top:1.25rem;width:100%;padding:.8rem;font-size:1rem;
-         background:#8faf6e;color:#16210f;border:0;border-radius:8px;font-weight:600}
-  .summary{color:#b9b3a3;font-size:.9rem}
+         background:#eec35e;color:#1a1a1a;border:0;border-radius:8px;font-weight:600}
+  .summary{color:#8a8a8a;font-size:.9rem}
 </style></head>
 <body>
   <h1>Collection Yakari</h1>

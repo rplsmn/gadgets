@@ -6,20 +6,28 @@ Chaque sous-dossier contenant un fichier `gadget.json` est un gadget :
     dossier "output" (défaut "dist") est copié vers dist/<slug>/
   - sinon (gadget statique) : le dossier est copié tel quel vers dist/<slug>/
 
-Génère aussi dist/index.html (grille de navigation) à partir des manifestes.
-Aucune dépendance externe : stdlib uniquement.
+Le HTML partagé vit dans core/ (facile à éditer, séparé du code) :
+  - core/index.html : la page d'accueil (placeholders __CARDS__ / __GENERATED__)
+  - core/nav.html   : la mini-navbar injectée automatiquement en haut de
+    chaque page de chaque gadget (placeholder __ROOT__ = chemin vers la racine).
+    Un gadget peut s'en passer avec "nav": false dans son gadget.json.
 
-Ajouter un gadget = déposer un dossier avec un gadget.json. Rien d'autre.
+Aucune dépendance externe : stdlib uniquement.
+Ajouter un gadget = déposer un dossier + un gadget.json + push.
 """
 import html
 import json
+import re
 import shutil
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+CORE = ROOT / "core"
 DIST = ROOT / "dist"
+
+BODY_RE = re.compile(r"(<body[^>]*>)", re.IGNORECASE)
 
 
 def discover():
@@ -49,6 +57,23 @@ def build_gadget(g):
             dirs_exist_ok=True,
             ignore=shutil.ignore_patterns("gadget.json", "__pycache__", ".git", "dist"),
         )
+    if g.get("nav", True):
+        inject_nav(out)
+
+
+def inject_nav(gadget_dist):
+    """Insère la navbar partagée juste après <body> dans chaque .html du gadget."""
+    nav_tmpl = (CORE / "nav.html").read_text(encoding="utf-8")
+    for htmlfile in gadget_dist.rglob("*.html"):
+        text = htmlfile.read_text(encoding="utf-8")
+        if "g-nav" in text:  # déjà injectée
+            continue
+        depth = len(htmlfile.relative_to(DIST).parts) - 1  # /<slug>/index.html -> 1
+        root = "../" * depth or "./"
+        nav = nav_tmpl.replace("__ROOT__", root)
+        new_text, n = BODY_RE.subn(lambda m: m.group(1) + "\n" + nav, text, count=1)
+        if n:
+            htmlfile.write_text(new_text, encoding="utf-8")
 
 
 def build_index(gadgets):
@@ -64,9 +89,8 @@ def build_index(gadgets):
             f"      </a></li>"
         )
     generated = datetime.now(timezone.utc).strftime("%d/%m/%Y à %H:%M UTC")
-    page = INDEX_TMPL.replace("__CARDS__", "\n".join(cards)).replace(
-        "__GENERATED__", generated
-    )
+    tmpl = (CORE / "index.html").read_text(encoding="utf-8")
+    page = tmpl.replace("__CARDS__", "\n".join(cards)).replace("__GENERATED__", generated)
     (DIST / "index.html").write_text(page, encoding="utf-8")
 
 
@@ -86,50 +110,6 @@ def main():
         shutil.copy(cname, DIST / "CNAME")
     print(f"✅ {len(gadgets)} gadget(s) assemblé(s) -> {DIST}")
 
-
-INDEX_TMPL = """<!doctype html>
-<html lang="fr">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gadgets — raphaelsimon.fr</title>
-<style>
-  :root{--bg:#1b2420;--card:#243029;--card-line:rgba(237,230,216,.14);
-    --ink:#ede6d8;--ink-dim:#b9b3a3;--moss:#8faf6e;}
-  *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  header{padding:2.5rem 1.25rem 1rem;max-width:1000px;margin:0 auto}
-  h1{margin:0 0 .25rem;font-size:1.8rem;letter-spacing:.01em}
-  .sub{color:var(--ink-dim);margin:0;font-size:.95rem}
-  main{max-width:1000px;margin:0 auto;padding:1.25rem 1.25rem 3rem}
-  ul.grid{list-style:none;margin:0;padding:0;display:grid;gap:1rem;
-    grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-  .card{display:block;background:var(--card);border:1px solid var(--card-line);
-    border-radius:12px;padding:1.1rem 1.2rem;text-decoration:none;color:inherit;
-    transition:border-color .15s ease,transform .15s ease}
-  .card:hover{border-color:var(--moss);transform:translateY(-2px)}
-  .card h2{margin:0 0 .35rem;font-size:1.1rem}
-  .card p{margin:0;color:var(--ink-dim);font-size:.9rem;line-height:1.45}
-  .card .arrow{color:var(--moss);font-size:.85rem;margin-top:.7rem;display:inline-block}
-  footer{max-width:1000px;margin:0 auto;padding:0 1.25rem 2.5rem;
-    color:var(--ink-dim);font-size:.78rem}
-</style>
-</head>
-<body>
-  <header>
-    <h1>Gadgets</h1>
-    <p class="sub">Petites pages statiques — raphaelsimon.fr</p>
-  </header>
-  <main>
-    <ul class="grid">
-__CARDS__
-    </ul>
-  </main>
-  <footer>Généré automatiquement le __GENERATED__.</footer>
-</body>
-</html>
-"""
 
 if __name__ == "__main__":
     main()
