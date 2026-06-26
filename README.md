@@ -57,8 +57,5 @@ dans le repo.)
 
 - **Plateforme** : GitHub Pages (repo `rplsmn/gadgets`), source = GitHub Actions.
 - **Domaine** : fichier `CNAME` = `gadgets.raphaelsimon.fr`.
-- **DNS** (chez **Netim**, `ns*.netim.net`) :
-  `CNAME  gadgets  →  rplsmn.github.io.`
+- **DNS** : `CNAME  gadgets  →  rplsmn.github.io.`
 - Settings > Pages : custom domain `gadgets.raphaelsimon.fr` + Enforce HTTPS.
-
-C'est la même recette que `www` et `akm`.
